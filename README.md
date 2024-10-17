@@ -22,11 +22,12 @@ Install dependencies using:
 pip install psutil
 ```
 
-## Maintainer
-[Ameya Khanzode](https://github.com/AmeyaKhanzode/)
 
 To run this locally
 ```
 git clone https://github.com/yourusername/process-manager.git
 cd process-manager
 ```
+
+## Maintainer
+[Ameya Khanzode](https://github.com/AmeyaKhanzode/)
