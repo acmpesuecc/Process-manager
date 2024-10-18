@@ -18,7 +18,7 @@ def list_processes():
             exe_path = process.info["exe"] if process.info["exe"] else ""
             username = process.info.get("username", "")
             if process.info["status"] == psutil.STATUS_RUNNING and username == current_user and not any(exe_path.startswith(path) for path in system_paths):
-                print(f"\033[94m{process.info['pid']:<10}\033[0m\033[95m{process.info['name']:<50}\033[0m{(process.info['cpu_percent']:<15}\033[96m{process.info['memory_percent']*psutil.virtual_memory()[0])/10**8:<15}\033[0m")
+                print(f"\033[94m{process.info['pid']:<10}\033[0m\033[95m{process.info['name']:<50}\033[0m{process.info['cpu_percent']:<15}\033[96m{(process.info['memory_percent']*psutil.virtual_memory()[0])/10**8:<15}\033[0m")
 
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             continue 
