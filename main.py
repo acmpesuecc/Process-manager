@@ -1,14 +1,16 @@
 import psutil
 import time
-import threading
-import urwid
 import os
 
 def list_processes():
     print(f"\033[92;42m{'PID':<10}{'Name':<50}{'CPU Usage (%)':<15}{'Memory Usage (in MB)':<15}\033[0m")
     print("-" * 91)
 
-    system_paths = ['C:\\Windows\\System32', 'C:\\Windows\\']
+    # Handle system paths for both Windows and Linux
+    if os.name == 'nt':  # Windows
+        system_paths = ['C:\\Windows\\System32', 'C:\\Windows\\']
+    else:  # Linux/Unix-like
+        system_paths = ['/usr/sbin', '/sbin', '/bin', '/usr/bin']
 
     current_user = psutil.Process().username()
 
@@ -18,7 +20,7 @@ def list_processes():
             exe_path = process.info["exe"] if process.info["exe"] else ""
             username = process.info.get("username", "")
             if process.info["status"] == psutil.STATUS_RUNNING and username == current_user and not any(exe_path.startswith(path) for path in system_paths):
-                print(f"\033[94m{process.info['pid']:<10}\033[0m\033[95m{process.info['name']:<50}\033[0m{process.info['cpu_percent']:<15}\033[96m{(process.info['memory_percent']*psutil.virtual_memory()[0])/10**8:<15} MB\033[0m")
+                print(f"\033[94m{process.info['pid']:<10}\033[0m\033[95m{name:<50}\033[0m{process.info['cpu_percent']:<15}\033[96m{(process.info['memory_percent']*psutil.virtual_memory().total)/10**8:<15.2f} MB\033[0m")
 
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             continue 
@@ -26,10 +28,17 @@ def list_processes():
 def kill_process(pid):
     try:
         process = psutil.Process(pid)
+        
+        # Prevent termination of crucial system processes
+        if pid == 1 or process.name() in ['systemd', 'init', 'sshd']:
+            print(f"Error: Cannot terminate crucial system process {process.name()} (PID {pid}).")
+            return
+        
         print(f"Terminating process {pid} ({process.name()})...");
         process.terminate()
         process.wait(timeout=3)
         print(f"Process {pid} ({process.name()}) has been terminated.")
+        
     except psutil.NoSuchProcess:
         print(f"Process with PID {pid} does not exist.")
     except psutil.AccessDenied:
