@@ -5,7 +5,7 @@ import urwid
 import os
 
 def list_processes():
-    print(f"\033[92;42m{'PID':<10}{'Name':<50}{'CPU Usage (%)':<15}{'Memory Usage (%)':<15}\033[0m")
+    print(f"\033[92;42m{'PID':<10}{'Name':<50}{'CPU Usage (%)':<15}{'Memory Usage (in MB)':<15}\033[0m")
     print("-" * 91)
 
     system_paths = ['C:\\Windows\\System32', 'C:\\Windows\\']
